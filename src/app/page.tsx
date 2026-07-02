@@ -9,11 +9,14 @@ export default function HomePage() {
   return (
     <main>
       <Hero />
-      <ProductCarousel />
-      <Features />
-      <SocialProof />
-      <CtaSection />
-      <Footer />
+      {/* Este wrapper desliza sobre el hero sticky */}
+      <div className="relative z-10">
+        <ProductCarousel />
+        <Features />
+        <SocialProof />
+        <CtaSection />
+        <Footer />
+      </div>
     </main>
   )
 }

@@ -3,15 +3,15 @@ export const WHATSAPP_URL =
 export const INSTAGRAM_URL = "https://instagram.com/cupertinostoreok"
 export const SITE_URL = "https://cupertinostore.com.ar"
 
+const US = "https://images.unsplash.com"
+
 export type Product = {
   id: number
   name: string
   storage: string
   price: number
-  /** screen background gradient for CSS mockup */
-  screenGradient: [string, string, string]
-  /** frame color hex */
-  frameColor: string
+  image: string
+  imageAlt: string
   badge?: string
   type: "iphone" | "mac"
 }
@@ -22,8 +22,8 @@ export const products: Product[] = [
     name: "iPhone 17 Pro Max",
     storage: "256GB",
     price: 1320,
-    screenGradient: ["#C4B898", "#A09070", "#7A6A50"],
-    frameColor: "#8A7A60",
+    image: `${US}/photo-1580910051074-3eb694886505?w=470&h=556&fit=crop&q=85`,
+    imageAlt: "iPhone 17 Pro Max",
     badge: "Nuevo",
     type: "iphone",
   },
@@ -32,8 +32,8 @@ export const products: Product[] = [
     name: "iPhone 17 Pro",
     storage: "256GB",
     price: 1220,
-    screenGradient: ["#3A3A3C", "#2C2C2E", "#1C1C1E"],
-    frameColor: "#2A2A2C",
+    image: `${US}/photo-1632661674596-df8be070a5c5?w=470&h=556&fit=crop&q=85`,
+    imageAlt: "iPhone 17 Pro",
     badge: "Nuevo",
     type: "iphone",
   },
@@ -42,8 +42,8 @@ export const products: Product[] = [
     name: "iPhone 17",
     storage: "128GB",
     price: 1050,
-    screenGradient: ["#E8B4BC", "#D4849C", "#B86080"],
-    frameColor: "#D48090",
+    image: `${US}/photo-1567581935884-3349723552ca?w=470&h=556&fit=crop&q=85`,
+    imageAlt: "iPhone 17",
     type: "iphone",
   },
   {
@@ -51,8 +51,8 @@ export const products: Product[] = [
     name: "iPhone 16 Pro Max",
     storage: "256GB",
     price: 1180,
-    screenGradient: ["#C8B89A", "#AA9878", "#8A7858"],
-    frameColor: "#AA9070",
+    image: `${US}/photo-1510557880182-3d4d3cba35a5?w=470&h=556&fit=crop&q=85`,
+    imageAlt: "iPhone 16 Pro Max",
     badge: "Disponible",
     type: "iphone",
   },
@@ -61,8 +61,8 @@ export const products: Product[] = [
     name: "iPhone 16 Pro",
     storage: "256GB",
     price: 1080,
-    screenGradient: ["#4A5568", "#2D3748", "#1A2332"],
-    frameColor: "#3A4558",
+    image: `${US}/photo-1574944985070-8f3ebc6b79d2?w=470&h=556&fit=crop&q=85`,
+    imageAlt: "iPhone 16 Pro",
     type: "iphone",
   },
   {
@@ -70,8 +70,8 @@ export const products: Product[] = [
     name: "iPhone 16",
     storage: "128GB",
     price: 950,
-    screenGradient: ["#3B5998", "#2A4480", "#1A3060"],
-    frameColor: "#2A4070",
+    image: `${US}/photo-1592750475338-74b7b21085ab?w=470&h=556&fit=crop&q=85`,
+    imageAlt: "iPhone 16",
     type: "iphone",
   },
   {
@@ -79,8 +79,8 @@ export const products: Product[] = [
     name: "MacBook Air M4",
     storage: "16GB · 256GB SSD",
     price: 1450,
-    screenGradient: ["#C6C2B8", "#B0AC A2", "#9A9690"],
-    frameColor: "#C0BCB2",
+    image: `${US}/photo-1517336714731-489689fd1ca8?w=452&h=420&fit=crop&q=85`,
+    imageAlt: "MacBook Air M4",
     type: "mac",
   },
   {
@@ -88,15 +88,15 @@ export const products: Product[] = [
     name: "MacBook Pro M4",
     storage: "16GB · 512GB SSD",
     price: 1950,
-    screenGradient: ["#2C2C2E", "#1C1C1E", "#0A0A0C"],
-    frameColor: "#1A1A1C",
+    image: `${US}/photo-1541807084-5c52b6b3adef?w=452&h=420&fit=crop&q=85`,
+    imageAlt: "MacBook Pro M4",
     type: "mac",
   },
 ]
 
 export type Feature = {
   id: string
-  icon: "shield" | "zap" | "lock" | "message-circle"
+  icon: "shield-check" | "truck" | "package-check" | "message-circle"
   title: string
   description: string
 }
@@ -104,19 +104,19 @@ export type Feature = {
 export const features: Feature[] = [
   {
     id: "warranty",
-    icon: "shield",
+    icon: "shield-check",
     title: "Garantía certificada",
     description: "Todos nuestros productos incluyen garantía oficial Apple. Sin letra chica, sin sorpresas.",
   },
   {
     id: "shipping",
-    icon: "zap",
+    icon: "truck",
     title: "Envío en 24-48hs",
     description: "Entrega rápida en CABA y GBA. Envíos a todo el país disponibles con seguimiento.",
   },
   {
     id: "original",
-    icon: "lock",
+    icon: "package-check",
     title: "100% original sellado",
     description: "Importados directamente. Caja sellada, sin activar, verificados uno por uno.",
   },

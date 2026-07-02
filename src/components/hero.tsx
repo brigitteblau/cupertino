@@ -1,144 +1,181 @@
+"use client"
+
+import { useRef, useState } from "react"
+import { motion, useScroll, useTransform } from "framer-motion"
 import Link from "next/link"
-import { PhoneMockup } from "@/components/ui/phone-mockup"
 import { WHATSAPP_URL, INSTAGRAM_URL } from "@/lib/constants"
 
+const LINES = [
+  { text: "Stock Apple", accent: false },
+  { text: "sellado y con", accent: false },
+  { text: "garantía.", accent: true },
+]
+
 export function Hero() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const [mouse, setMouse] = useState({ x: 50, y: 50 })
+
+  const { scrollY } = useScroll()
+  const contentOpacity = useTransform(scrollY, [0, 380], [1, 0])
+  const contentY      = useTransform(scrollY, [0, 380], [0, -32])
+  const bgScale       = useTransform(scrollY, [0, 600], [1, 1.1])
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    setMouse({
+      x: ((e.clientX - rect.left) / rect.width) * 100,
+      y: ((e.clientY - rect.top) / rect.height) * 100,
+    })
+  }
+
   return (
     <section
-      className="hero-bg relative min-h-screen flex items-center overflow-hidden"
+      ref={sectionRef}
+      className="relative h-screen sticky top-0 z-0 overflow-hidden"
+      onMouseMove={handleMouseMove}
       aria-label="Inicio"
     >
-      {/* Decorative orbs */}
+      {/* ── Fallback gradient (shows if image not found) ── */}
       <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-40 right-1/4 w-[600px] h-[600px] rounded-full opacity-20"
+        className="absolute inset-0"
         style={{
-          background: "radial-gradient(circle, #7C3AED 0%, transparent 70%)",
-          filter: "blur(80px)",
-        }}
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full opacity-15"
-        style={{
-          background: "radial-gradient(circle, #2563EB 0%, transparent 70%)",
-          filter: "blur(80px)",
+          background: "linear-gradient(160deg, #1a0c04 0%, #0f0f0f 50%, #08101e 100%)",
         }}
       />
 
-      <div className="relative mx-auto w-full max-w-7xl px-6 py-28 flex flex-col-reverse items-center gap-16 lg:flex-row lg:justify-between lg:gap-12">
-        {/* Text */}
-        <div className="flex-1 text-center lg:text-left max-w-xl">
-          <p
-            className="mb-5 text-xs font-semibold uppercase tracking-[0.2em] text-purple-400 animate-fade-in"
-            style={{ animationDelay: "0ms" }}
+      {/* ── Hero photo with parallax ── */}
+      <motion.div
+        className="absolute inset-0"
+        style={{
+          backgroundImage: "url('/hero.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center 60%",
+          scale: bgScale,
+          transformOrigin: "center center",
+        }}
+      />
+
+      {/* ── Dark overlay ── */}
+      <div
+        className="absolute inset-0"
+        style={{ background: "rgba(0,0,0,0.68)" }}
+      />
+
+      {/* ── Warm vignette (top & sides) ── */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 120% 80% at 50% 0%, rgba(10,5,0,0.6) 0%, transparent 60%)",
+        }}
+      />
+
+      {/* ── Bottom fade into next section ── */}
+      <div
+        aria-hidden="true"
+        className="absolute bottom-0 inset-x-0 h-48 pointer-events-none"
+        style={{ background: "linear-gradient(to bottom, transparent, rgba(15,15,15,0.95))" }}
+      />
+
+      {/* ── Mouse spotlight ── */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: `radial-gradient(650px circle at ${mouse.x}% ${mouse.y}%, rgba(245,158,11,0.11) 0%, transparent 60%)`,
+          transition: "background 0.1s ease",
+        }}
+      />
+
+      {/* ── Content ── */}
+      <motion.div
+        className="relative z-10 h-full flex flex-col justify-center"
+        style={{ opacity: contentOpacity, y: contentY }}
+      >
+        <div className="mx-auto max-w-7xl px-6 w-full">
+
+          {/* Label */}
+          <motion.p
+            className="mb-5 text-xs font-semibold uppercase tracking-[0.22em]"
+            style={{ color: "#F59E0B" }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
           >
             Cupertino Store · Buenos Aires
-          </p>
+          </motion.p>
 
-          <h1
-            className="mb-6 text-5xl font-bold leading-[1.04] tracking-tight text-white sm:text-6xl xl:text-7xl animate-fade-up"
-            style={{ animationDelay: "80ms" }}
-          >
-            iPhone a
-            <br />
-            <span
-              className="bg-clip-text text-transparent"
-              style={{
-                backgroundImage: "linear-gradient(135deg, #C084FC 0%, #818CF8 100%)",
-              }}
-            >
-              precio oficial.
-            </span>
+          {/* Headline — blur reveal por línea */}
+          <h1 className="mb-8" aria-label="Stock Apple sellado y con garantía.">
+            {LINES.map((line, i) => (
+              <motion.span
+                key={line.text}
+                className="block text-5xl font-bold tracking-tight leading-[1.06] sm:text-6xl xl:text-[80px]"
+                style={{ color: line.accent ? "#F59E0B" : "#FFFFFF" }}
+                initial={{ opacity: 0, y: 28, filter: "blur(14px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                transition={{
+                  duration: 0.75,
+                  delay: 0.25 + i * 0.13,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+              >
+                {line.text}
+              </motion.span>
+            ))}
           </h1>
 
-          <p
-            className="mb-10 text-lg leading-relaxed text-white/55 sm:text-xl animate-fade-up"
-            style={{ animationDelay: "160ms" }}
+          {/* Subtítulo */}
+          <motion.p
+            className="mb-10 text-base leading-relaxed sm:text-lg max-w-md"
+            style={{ color: "rgba(255,255,255,0.48)" }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.68 }}
           >
             Importados directo. Garantía certificada.
             <br className="hidden sm:block" />
             Envío en 24‑48hs a CABA.
-          </p>
+          </motion.p>
 
-          <div
-            className="flex flex-col items-center gap-4 sm:flex-row lg:justify-start animate-fade-up"
-            style={{ animationDelay: "240ms" }}
+          {/* CTAs */}
+          <motion.div
+            className="flex flex-col gap-3 sm:flex-row sm:items-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.82 }}
           >
             <Link
               href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-primary inline-block px-8 py-3.5 text-base"
+              className="btn-primary inline-flex items-center justify-center px-8 py-3.5 text-sm"
               aria-label="Consultar por WhatsApp"
             >
               Consultar por WhatsApp
             </Link>
-
             <Link
               href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-ghost inline-block px-8 py-3.5 text-base"
+              className="btn-ghost inline-flex items-center justify-center px-8 py-3.5 text-sm"
               aria-label="Ver stock en Instagram"
             >
               Ver stock en Instagram
             </Link>
-          </div>
+          </motion.div>
 
-          <p
-            className="mt-8 text-sm text-white/25 animate-fade-in"
-            style={{ animationDelay: "400ms" }}
+          {/* Stats */}
+          <motion.p
+            className="mt-8 text-xs"
+            style={{ color: "rgba(255,255,255,0.20)" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 1.05 }}
           >
             +500 clientes · 4.9★ · Distribuidor autorizado
-          </p>
+          </motion.p>
         </div>
-
-        {/* Phones visual */}
-        <div
-          className="relative flex items-end justify-center gap-6 animate-fade-in flex-shrink-0"
-          style={{ animationDelay: "200ms" }}
-          aria-hidden="true"
-        >
-          {/* Back phone (slightly smaller, shifted) */}
-          <div className="hidden sm:block opacity-60" style={{ marginBottom: -24 }}>
-            <PhoneMockup
-              screenGradient={["#C4B898", "#A09070", "#7A6A50"]}
-              frameColor="#8A7A60"
-              size="md"
-            />
-          </div>
-
-          {/* Front / main phone */}
-          <PhoneMockup
-            screenGradient={["#3A3A3C", "#2C2C2E", "#1C1C1E"]}
-            frameColor="#2A2A2C"
-            size="lg"
-          />
-
-          {/* Floating badge */}
-          <div
-            className="absolute -bottom-4 -right-2 rounded-2xl px-4 py-2.5 text-center shadow-xl hidden sm:block"
-            style={{
-              background: "rgba(255,255,255,0.06)",
-              backdropFilter: "blur(20px)",
-              border: "1px solid rgba(255,255,255,0.1)",
-            }}
-          >
-            <p className="text-xs font-semibold text-white">iPhone 17 Pro</p>
-            <p className="text-lg font-bold text-white">USD 1.220</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom fade */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute bottom-0 inset-x-0 h-24"
-        style={{
-          background: "linear-gradient(to bottom, transparent, #0A0814)",
-        }}
-      />
+      </motion.div>
     </section>
   )
 }

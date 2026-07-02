@@ -1,34 +1,40 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import useEmblaCarousel from "embla-carousel-react"
-import { PhoneMockup } from "@/components/ui/phone-mockup"
-import { LaptopMockup } from "@/components/ui/laptop-mockup"
-import { Badge } from "@/components/ui/badge"
+import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures"
 import { products, WHATSAPP_URL, type Product } from "@/lib/constants"
 
 function ProductCard({ product }: { product: Product }) {
   const waLink = `https://wa.me/5491161213913?text=Hola%2C%20me%20interesa%20el%20${encodeURIComponent(product.name)}`
+  const isMac = product.type === "mac"
 
   return (
     <article
-      className="product-card flex flex-col rounded-2xl overflow-hidden bg-white"
-      style={{ width: 280, boxShadow: "0 2px 20px rgba(0,0,0,0.08)" }}
+      className="product-card flex flex-col rounded-2xl overflow-hidden bg-white shrink-0"
+      style={{
+        width: "clamp(220px, 72vw, 260px)",
+        boxShadow: "0 1px 8px rgba(0,0,0,0.06), 0 4px 20px rgba(0,0,0,0.05)",
+      }}
     >
-      {/* Mockup area */}
+      {/* Image area */}
       <div
-        className="flex items-end justify-center pt-8 pb-6 relative"
-        style={{ background: "linear-gradient(160deg, #F0EEF8 0%, #E8E4F4 100%)", minHeight: 260 }}
+        className="relative overflow-hidden"
+        style={{
+          background: "#F5F5F7",
+          height: isMac ? 190 : 240,
+        }}
       >
         {product.badge && (
-          <div className="absolute top-4 right-4">
+          <div className="absolute top-3 left-3 z-10">
             <span
-              className="text-xs font-semibold px-3 py-1 rounded-full"
+              className="text-xs font-semibold px-2.5 py-1 rounded-full"
               style={{
-                background: product.badge === "Nuevo" ? "#EDE9FE" : "#FEF3C7",
-                color: product.badge === "Nuevo" ? "#6D28D9" : "#92400E",
+                background: product.badge === "Nuevo" ? "#111111" : "#E8E8ED",
+                color: product.badge === "Nuevo" ? "#fff" : "#3A3A3C",
               }}
             >
               {product.badge}
@@ -36,26 +42,25 @@ function ProductCard({ product }: { product: Product }) {
           </div>
         )}
 
-        {product.type === "iphone" ? (
-          <PhoneMockup
-            screenGradient={product.screenGradient}
-            frameColor={product.frameColor}
-            size="md"
-          />
-        ) : (
-          <LaptopMockup screenGradient={product.screenGradient} size="sm" />
-        )}
+        <Image
+          src={product.image}
+          alt={product.imageAlt}
+          fill
+          sizes="(max-width: 640px) 72vw, 260px"
+          className="object-cover"
+          style={{ objectPosition: isMac ? "center" : "center top" }}
+        />
       </div>
 
       {/* Info */}
-      <div className="flex flex-col flex-1 p-5">
-        <h3 className="text-sm font-semibold text-gray-900 mb-0.5">{product.name}</h3>
-        <p className="text-xs text-gray-400 mb-4">{product.storage}</p>
+      <div className="flex flex-col flex-1 p-4">
+        <h3 className="text-sm font-semibold text-gray-900 leading-snug">{product.name}</h3>
+        <p className="text-xs text-gray-400 mt-0.5 mb-4">{product.storage}</p>
 
-        <div className="mt-auto flex items-center justify-between">
+        <div className="mt-auto flex items-end justify-between gap-2">
           <div>
             <p className="text-xs text-gray-400 mb-0.5">Precio oficial</p>
-            <p className="text-xl font-bold text-gray-900">
+            <p className="text-xl font-bold text-gray-900 leading-none">
               USD {product.price.toLocaleString("es-AR")}
             </p>
           </div>
@@ -63,8 +68,8 @@ function ProductCard({ product }: { product: Product }) {
             href={waLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-full px-4 py-2 text-xs font-semibold text-white transition-all duration-200 hover:opacity-90"
-            style={{ background: "linear-gradient(135deg, #6D28D9, #4F46E5)" }}
+            className="shrink-0 rounded-full px-4 py-2 text-xs font-semibold text-white transition-opacity hover:opacity-75"
+            style={{ background: "#111111" }}
             aria-label={`Consultar por ${product.name}`}
           >
             Consultar
@@ -76,11 +81,14 @@ function ProductCard({ product }: { product: Product }) {
 }
 
 export function ProductCarousel() {
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    align: "start",
-    dragFree: true,
-    containScroll: "trimSnaps",
-  })
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    {
+      align: "start",
+      dragFree: true,
+      containScroll: "trimSnaps",
+    },
+    [WheelGesturesPlugin()]
+  )
 
   const [prevEnabled, setPrevEnabled] = useState(false)
   const [nextEnabled, setNextEnabled] = useState(true)
@@ -96,7 +104,10 @@ export function ProductCarousel() {
     onSelect()
     emblaApi.on("select", onSelect)
     emblaApi.on("reInit", onSelect)
-    return () => { emblaApi.off("select", onSelect); emblaApi.off("reInit", onSelect) }
+    return () => {
+      emblaApi.off("select", onSelect)
+      emblaApi.off("reInit", onSelect)
+    }
   }, [emblaApi, onSelect])
 
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi])
@@ -105,15 +116,19 @@ export function ProductCarousel() {
   return (
     <section
       id="productos"
-      className="py-24 sm:py-32"
+      className="py-20 sm:py-28"
       aria-labelledby="products-heading"
-      style={{ background: "#F7F7F9" }}
+      style={{
+        background: "#F5F5F7",
+        borderRadius: "20px 20px 0 0",
+        boxShadow: "0 -6px 40px rgba(0,0,0,0.25)",
+      }}
     >
       <div className="mx-auto max-w-7xl">
         {/* Header */}
-        <div className="mb-12 flex items-end justify-between px-6">
+        <div className="mb-10 flex items-end justify-between px-6">
           <div>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-purple-600">
+            <p className="mb-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-gray-400">
               Catálogo
             </p>
             <h2
@@ -122,50 +137,62 @@ export function ProductCarousel() {
             >
               Stock disponible
             </h2>
-            <p className="mt-2 text-gray-500">
+            <p className="mt-2 text-sm text-gray-500">
               Todos los precios en USD · Precio oficial de importación
             </p>
           </div>
 
-          {/* Nav arrows */}
           <div className="hidden sm:flex gap-2">
             <button
               onClick={scrollPrev}
               disabled={!prevEnabled}
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 transition-all hover:border-purple-300 hover:text-purple-600 disabled:opacity-30 disabled:cursor-not-allowed"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 transition-all hover:border-gray-400 hover:text-gray-900 disabled:opacity-30 disabled:cursor-not-allowed"
               aria-label="Anterior"
             >
-              <ChevronLeft size={18} />
+              <ChevronLeft size={16} />
             </button>
             <button
               onClick={scrollNext}
               disabled={!nextEnabled}
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 transition-all hover:border-purple-300 hover:text-purple-600 disabled:opacity-30 disabled:cursor-not-allowed"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 transition-all hover:border-gray-400 hover:text-gray-900 disabled:opacity-30 disabled:cursor-not-allowed"
               aria-label="Siguiente"
             >
-              <ChevronRight size={18} />
+              <ChevronRight size={16} />
             </button>
           </div>
         </div>
 
         {/* Embla track */}
-        <div className="overflow-hidden px-6" ref={emblaRef}>
-          <div className="flex gap-5">
+        <div
+          className="overflow-hidden cursor-grab active:cursor-grabbing select-none"
+          ref={emblaRef}
+        >
+          <div className="flex gap-4 px-6">
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
         </div>
 
-        {/* Bottom CTA */}
-        <div className="mt-10 px-6">
+        {/* Dots indicator for mobile */}
+        <div className="mt-6 flex justify-center gap-1.5 sm:hidden px-6">
+          {products.map((_, i) => (
+            <div
+              key={i}
+              className="h-1 w-4 rounded-full"
+              style={{ background: i === 0 ? "#111111" : "#D1D1D6" }}
+            />
+          ))}
+        </div>
+
+        <div className="mt-6 px-6">
           <p className="text-sm text-gray-400">
             ¿No encontrás tu modelo?{" "}
             <Link
               href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-medium text-purple-600 hover:text-purple-700 underline underline-offset-4"
+              className="font-medium text-gray-700 hover:text-gray-900 underline underline-offset-4"
             >
               Consultanos por WhatsApp
             </Link>

@@ -8,7 +8,7 @@ export function Footer() {
     <footer
       className="px-6 py-12"
       style={{
-        background: "#07060F",
+        background: "#0A0A0A",
         borderTop: "1px solid rgba(255,255,255,0.06)",
       }}
       aria-label="Pie de página"
