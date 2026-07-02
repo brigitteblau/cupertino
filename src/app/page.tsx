@@ -3,19 +3,25 @@ import { ProductCarousel } from "@/components/product-carousel"
 import { Features } from "@/components/features"
 import { SocialProof } from "@/components/social-proof"
 import { CtaSection } from "@/components/cta-section"
-import { Footer } from "@/components/footer"
 
 export default function HomePage() {
   return (
     <main>
-      <Hero />
-      {/* Este wrapper desliza sobre el hero sticky */}
-      <div className="relative z-10">
+      <div className="sticky top-0" style={{ zIndex: 1 }}>
+        <Hero />
+      </div>
+      <div className="sticky top-0 stack-card" style={{ zIndex: 2 }}>
         <ProductCarousel />
+      </div>
+      <div className="sticky top-0 stack-card" style={{ zIndex: 3 }}>
         <Features />
+      </div>
+      <div className="sticky top-0 stack-card" style={{ zIndex: 4 }}>
         <SocialProof />
+      </div>
+      {/* CTA final — incluye footer, no sticky */}
+      <div className="stack-card" style={{ position: "relative", zIndex: 5 }}>
         <CtaSection />
-        <Footer />
       </div>
     </main>
   )

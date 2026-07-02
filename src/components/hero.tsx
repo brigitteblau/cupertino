@@ -2,8 +2,7 @@
 
 import { useRef, useState } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
-import Link from "next/link"
-import { WHATSAPP_URL, INSTAGRAM_URL } from "@/lib/constants"
+import { ChevronDown } from "lucide-react"
 
 const LINES = [
   { text: "Stock Apple", accent: false },
@@ -12,15 +11,14 @@ const LINES = [
 ]
 
 export function Hero() {
-  const sectionRef = useRef<HTMLElement>(null)
+  const ref = useRef<HTMLDivElement>(null)
   const [mouse, setMouse] = useState({ x: 50, y: 50 })
 
   const { scrollY } = useScroll()
-  const contentOpacity = useTransform(scrollY, [0, 380], [1, 0])
-  const contentY      = useTransform(scrollY, [0, 380], [0, -32])
-  const bgScale       = useTransform(scrollY, [0, 600], [1, 1.1])
+  const textOpacity = useTransform(scrollY, [0, 320], [1, 0])
+  const bgScale     = useTransform(scrollY, [0, 600], [1, 1.07])
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect()
     setMouse({
       x: ((e.clientX - rect.left) / rect.width) * 100,
@@ -29,93 +27,78 @@ export function Hero() {
   }
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative h-screen sticky top-0 z-0 overflow-hidden"
+    <div
+      ref={ref}
+      className="relative h-screen overflow-hidden"
       onMouseMove={handleMouseMove}
       aria-label="Inicio"
     >
-      {/* ── Fallback gradient (shows if image not found) ── */}
+      {/* ── Fallback cálido ── */}
       <div
         className="absolute inset-0"
-        style={{
-          background: "linear-gradient(160deg, #1a0c04 0%, #0f0f0f 50%, #08101e 100%)",
-        }}
+        style={{ background: "linear-gradient(160deg,#EDE0D0 0%,#D8CCB8 100%)" }}
       />
 
-      {/* ── Hero photo with parallax ── */}
+      {/* ── Foto de fondo ── */}
       <motion.div
         className="absolute inset-0"
         style={{
           backgroundImage: "url('/hero.jpg')",
           backgroundSize: "cover",
-          backgroundPosition: "center 60%",
+          backgroundPosition: "center 40%",
           scale: bgScale,
           transformOrigin: "center center",
         }}
       />
 
-      {/* ── Dark overlay ── */}
+      {/* ── Gradient inferior: foto domina arriba, texto legible abajo ── */}
       <div
         className="absolute inset-0"
-        style={{ background: "rgba(0,0,0,0.68)" }}
-      />
-
-      {/* ── Warm vignette (top & sides) ── */}
-      <div
-        className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 120% 80% at 50% 0%, rgba(10,5,0,0.6) 0%, transparent 60%)",
+            "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 38%, rgba(0,0,0,0.35) 62%, rgba(0,0,0,0.72) 82%, rgba(0,0,0,0.88) 100%)",
         }}
       />
 
-      {/* ── Bottom fade into next section ── */}
-      <div
-        aria-hidden="true"
-        className="absolute bottom-0 inset-x-0 h-48 pointer-events-none"
-        style={{ background: "linear-gradient(to bottom, transparent, rgba(15,15,15,0.95))" }}
-      />
-
-      {/* ── Mouse spotlight ── */}
+      {/* ── Spotlight sutil ── */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: `radial-gradient(650px circle at ${mouse.x}% ${mouse.y}%, rgba(245,158,11,0.11) 0%, transparent 60%)`,
-          transition: "background 0.1s ease",
+          background: `radial-gradient(500px circle at ${mouse.x}% ${mouse.y}%, rgba(255,200,100,0.06) 0%, transparent 55%)`,
+          transition: "background 0.15s ease",
         }}
       />
 
-      {/* ── Content ── */}
+      {/* ── Texto: anclado al fondo ── */}
       <motion.div
-        className="relative z-10 h-full flex flex-col justify-center"
-        style={{ opacity: contentOpacity, y: contentY }}
+        className="absolute bottom-0 inset-x-0 px-6 pb-20 sm:pb-28"
+        style={{ opacity: textOpacity }}
       >
-        <div className="mx-auto max-w-7xl px-6 w-full">
+        <div className="mx-auto max-w-7xl">
 
-          {/* Label */}
           <motion.p
-            className="mb-5 text-xs font-semibold uppercase tracking-[0.22em]"
-            style={{ color: "#F59E0B" }}
+            className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-white/50"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
+            transition={{ duration: 0.5, delay: 0.15 }}
           >
             Cupertino Store · Buenos Aires
           </motion.p>
 
-          {/* Headline — blur reveal por línea */}
-          <h1 className="mb-8" aria-label="Stock Apple sellado y con garantía.">
+          <h1 className="mb-0" aria-label="Stock Apple sellado y con garantía.">
             {LINES.map((line, i) => (
               <motion.span
                 key={line.text}
-                className="block text-5xl font-bold tracking-tight leading-[1.06] sm:text-6xl xl:text-[80px]"
-                style={{ color: line.accent ? "#F59E0B" : "#FFFFFF" }}
-                initial={{ opacity: 0, y: 28, filter: "blur(14px)" }}
+                className="block font-bold tracking-tight leading-[1.04]"
+                style={{
+                  fontSize: "clamp(2.4rem, 6vw, 5rem)",
+                  color: line.accent ? "#F0C060" : "#FFFFFF",
+                }}
+                initial={{ opacity: 0, y: 24, filter: "blur(10px)" }}
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{
-                  duration: 0.75,
-                  delay: 0.25 + i * 0.13,
+                  duration: 0.7,
+                  delay: 0.3 + i * 0.12,
                   ease: [0.22, 1, 0.36, 1],
                 }}
               >
@@ -124,58 +107,26 @@ export function Hero() {
             ))}
           </h1>
 
-          {/* Subtítulo */}
           <motion.p
-            className="mb-10 text-base leading-relaxed sm:text-lg max-w-md"
-            style={{ color: "rgba(255,255,255,0.48)" }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.68 }}
-          >
-            Importados directo. Garantía certificada.
-            <br className="hidden sm:block" />
-            Envío en 24‑48hs a CABA.
-          </motion.p>
-
-          {/* CTAs */}
-          <motion.div
-            className="flex flex-col gap-3 sm:flex-row sm:items-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.82 }}
-          >
-            <Link
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary inline-flex items-center justify-center px-8 py-3.5 text-sm"
-              aria-label="Consultar por WhatsApp"
-            >
-              Consultar por WhatsApp
-            </Link>
-            <Link
-              href={INSTAGRAM_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-ghost inline-flex items-center justify-center px-8 py-3.5 text-sm"
-              aria-label="Ver stock en Instagram"
-            >
-              Ver stock en Instagram
-            </Link>
-          </motion.div>
-
-          {/* Stats */}
-          <motion.p
-            className="mt-8 text-xs"
-            style={{ color: "rgba(255,255,255,0.20)" }}
+            className="mt-5 text-base text-white/55 max-w-sm sm:text-lg"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 1.05 }}
+            transition={{ duration: 0.6, delay: 0.72 }}
           >
-            +500 clientes · 4.9★ · Distribuidor autorizado
+            Importados directo · Garantía certificada · 24-48hs CABA
           </motion.p>
         </div>
       </motion.div>
-    </section>
+
+      {/* ── Scroll cue ── */}
+      <motion.div
+        className="absolute bottom-6 left-1/2 -translate-x-1/2"
+        animate={{ y: [0, 6, 0] }}
+        transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+        aria-hidden="true"
+      >
+        <ChevronDown size={18} className="text-white/50" />
+      </motion.div>
+    </div>
   )
 }

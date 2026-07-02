@@ -8,20 +8,20 @@ export function Footer() {
     <footer
       className="px-6 py-12"
       style={{
-        background: "#0A0A0A",
+        background: "#1D1D1F",
         borderTop: "1px solid rgba(255,255,255,0.06)",
       }}
       aria-label="Pie de página"
     >
       <div className="mx-auto max-w-6xl">
         <div className="flex flex-col items-start gap-8 sm:flex-row sm:justify-between sm:items-center">
-          {/* Brand */}
           <div>
             <p className="text-base font-semibold text-white">Cupertino Store</p>
-            <p className="mt-1 text-sm text-white/35">Buenos Aires, Argentina</p>
+            <p className="mt-1 text-sm" style={{ color: "rgba(255,255,255,0.35)" }}>
+              Buenos Aires, Argentina
+            </p>
           </div>
 
-          {/* Links */}
           <nav aria-label="Links de contacto">
             <ul className="flex items-center gap-6">
               <li>
@@ -29,7 +29,8 @@ export function Footer() {
                   href={INSTAGRAM_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-white/40 transition-colors hover:text-white"
+                  className="text-sm transition-colors hover:text-white"
+                  style={{ color: "rgba(255,255,255,0.55)" }}
                   aria-label="Instagram de Cupertino Store"
                 >
                   Instagram
@@ -40,7 +41,8 @@ export function Footer() {
                   href={WHATSAPP_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-white/40 transition-colors hover:text-white"
+                  className="text-sm transition-colors hover:text-white"
+                  style={{ color: "rgba(255,255,255,0.55)" }}
                   aria-label="WhatsApp de Cupertino Store"
                 >
                   WhatsApp
@@ -54,10 +56,10 @@ export function Footer() {
           className="mt-8 pt-8 flex flex-col items-center gap-2 text-center sm:flex-row sm:justify-between sm:text-left"
           style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
         >
-          <p className="text-xs text-white/20">
+          <p className="text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>
             © {year} Cupertino Store. Todos los derechos reservados.
           </p>
-          <p className="text-xs text-white/20">
+          <p className="text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>
             Distribuidor autorizado de productos Apple importados legalmente.
           </p>
         </div>

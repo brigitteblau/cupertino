@@ -4,11 +4,10 @@
   --font-sans: var(--font-geist-sans);
   --animate-fade-up: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-fade-in: fade-in 0.5s ease-out both;
-  --animate-slide-in: slide-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(32px); }
+  from { opacity: 0; transform: translateY(28px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -17,13 +16,8 @@
   to   { opacity: 1; }
 }
 
-@keyframes slide-in {
-  from { opacity: 0; transform: translateX(24px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-
 :root {
-  color-scheme: dark light;
+  color-scheme: light;
 }
 
 *, *::before, *::after {
@@ -33,28 +27,30 @@
 html { scroll-behavior: smooth; }
 
 body {
-  background-color: #111111;
-  color: #fff;
+  background-color: #FAF8F5;
+  color: #1D1D1F;
   font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── Hero ───────────────────────────────────── */
-.hero-bg {
-  background: #111111;
+/* ── Section stacking ───────────────────────── */
+/* Applied per-section via z-index in page.tsx */
+.stack-card {
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.07);
+  overflow: hidden;
 }
 
 /* ── Product Card ───────────────────────────── */
 .product-card {
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-              box-shadow 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
   cursor: pointer;
 }
 
 .product-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.10);
 }
 
 /* ── Feature Card ───────────────────────────── */
@@ -68,36 +64,36 @@ body {
 
 /* ── Buttons ────────────────────────────────── */
 .btn-primary {
-  background: #fff;
-  color: #111111;
+  background: #1D1D1F;
+  color: #fff;
   font-weight: 600;
   border-radius: 100px;
   transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
 }
 
 .btn-primary:hover {
-  background: rgba(255,255,255,0.9);
+  background: #3A3A3C;
   transform: translateY(-1px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
 }
 
 .btn-ghost {
   background: transparent;
-  color: #fff;
+  color: #1D1D1F;
   font-weight: 600;
-  border: 1.5px solid rgba(255,255,255,0.25);
+  border: 1.5px solid rgba(0,0,0,0.18);
   border-radius: 100px;
   transition: background 0.2s, border-color 0.2s, transform 0.15s;
 }
 
 .btn-ghost:hover {
-  background: rgba(255,255,255,0.08);
-  border-color: rgba(255,255,255,0.5);
+  background: rgba(0,0,0,0.05);
+  border-color: rgba(0,0,0,0.35);
   transform: translateY(-1px);
 }
 
 .btn-dark {
-  background: #111111;
+  background: #1D1D1F;
   color: #fff;
   font-weight: 600;
   border-radius: 100px;
@@ -105,7 +101,7 @@ body {
 }
 
 .btn-dark:hover {
-  background: #1f1f1f;
+  background: #3A3A3C;
   transform: translateY(-1px);
 }
 
@@ -117,11 +113,4 @@ body {
 
 .scroll-hide::-webkit-scrollbar {
   display: none;
-}
-
-/* ── Separators ─────────────────────────────── */
-.sep {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
-  border: none;
 }
